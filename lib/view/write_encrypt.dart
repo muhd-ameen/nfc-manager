@@ -22,7 +22,7 @@ class _WriteNFCPageState extends State<WriteNFCPage> {
   }
 
   void _writeNFC() {
-    const password = 'palakkad123';
+    const password = 'Ameen@2';
     const key = 'my32lengthsupersecretnooneknows1'; // 32 chars
     const iv = '8bytesiv8bytesiv'; // 16 chars
 
