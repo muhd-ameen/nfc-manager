@@ -40,6 +40,7 @@ dependencies:
   provider:
   sqflite:
   url_launcher:
+  encrypt:
 
 dev_dependencies:
   flutter_test:

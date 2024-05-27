@@ -3,6 +3,7 @@
 import 'package:flutter_nfc_test/view/common/form_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nfc_test/view/login_screen.dart';
+import 'package:flutter_nfc_test/view/write_encrypt.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,6 +25,14 @@ class AboutPage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const LoginPage()));
               },
               child: const Text("Login")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WriteNFCPage()));
+              },
+              child: const Text("Write")),
           FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
             builder: (context, ss) => FormSection(children: [

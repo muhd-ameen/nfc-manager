@@ -1,15 +1,12 @@
-// ignore_for_file: avoid_print
-
-import 'dart:developer';
-
+// ignore_for_file: avoid_print, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -33,9 +30,16 @@ class _LoginPageState extends State<LoginPage> {
           return;
         }
         NdefMessage message = ndef.cachedMessage!;
-        String password = String.fromCharCodes(message.records.first.payload)
-            .substring(3); // removing language code
-        print('Password read from NFC tag: $password');
+        String encryptedPassword =
+            String.fromCharCodes(message.records.first.payload)
+                .substring(3); // removing language code
+        print('Encrypted password read from NFC tag: $encryptedPassword');
+
+        const key = 'my32lengthsupersecretnooneknows1'; // 32 chars
+        const iv = '8bytesiv8bytesiv'; // 16 chars
+
+        String password = decryptPassword(encryptedPassword, key, iv);
+        print('Decrypted password: $password');
         setState(() {
           _nfcPassword = password;
         });
@@ -48,8 +52,18 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  String decryptPassword(
+      String encryptedPassword, String keyString, String ivString) {
+    final key = encrypt.Key.fromUtf8(keyString);
+    final iv = encrypt.IV.fromUtf8(ivString);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+    final decrypted = encrypter.decrypt64(encryptedPassword, iv: iv);
+    return decrypted;
+  }
+
   void _login() {
-    log('Login with password: $_nfcPassword');
+    print('Login button pressed with password: $_nfcPassword');
     // Implement your login logic here using _nfcPassword
   }
 
@@ -76,4 +90,8 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(home: LoginPage()));
 }
